@@ -17,8 +17,45 @@ def next_period(period):
     date = datetime.strptime(period, "%Y-%m")
     return f"{date.year + (date.month == 12):04d}-{date.month % 12 + 1:02d}"
 
+def validate_employment(data):
+    errors = []
+    observations = data.get("series", [])
+    if data.get("demo") is not False: errors.append("empleo: demo debe ser false")
+    if data.get("source") != "INDEC": errors.append("empleo: la fuente debe ser INDEC")
+    if data.get("basePeriod") != BASE_PERIOD: errors.append(f"empleo: basePeriod debe ser {BASE_PERIOD}")
+    periods = [item.get("period") for item in observations]
+    if BASE_PERIOD not in periods: errors.append(f"empleo: falta {BASE_PERIOD}")
+    if len(periods) != len(set(periods)): errors.append("empleo: períodos duplicados")
+    if periods != sorted(periods): errors.append("empleo: períodos desordenados")
+    if any(current != next_period(previous) for previous, current in zip(periods, periods[1:])):
+        errors.append("empleo: existen meses faltantes")
+    if not observations or data.get("latestPeriod") != periods[-1]:
+        errors.append("empleo: último período inconsistente")
+    values = [item.get("value") for item in observations]
+    if any(not isinstance(value, (int, float)) or isinstance(value, bool) or not math.isfinite(value) or value <= 0 for value in values):
+        errors.append("empleo: existen valores nulos, no numéricos o no positivos")
+        return errors
+    base = next((item["value"] for item in observations if item["period"] == BASE_PERIOD), None)
+    for index, item in enumerate(observations):
+        expected_monthly = None if index == 0 else item["value"] - observations[index - 1]["value"]
+        expected_monthly_pct = None if index == 0 else (item["value"] / observations[index - 1]["value"] - 1) * 100
+        expected_base = item["value"] - base
+        expected_base_pct = (item["value"] / base - 1) * 100
+        for field, expected in (("monthlyChange", expected_monthly), ("monthlyChangePct", expected_monthly_pct),
+                                ("changeFromBase", expected_base), ("changeFromBasePct", expected_base_pct)):
+            actual = item.get(field)
+            if expected is None:
+                if actual is not None: errors.append(f"empleo: {field} debe ser nulo en {item['period']}")
+            elif not isinstance(actual, (int, float)) or not math.isclose(actual, expected, abs_tol=1e-10):
+                errors.append(f"empleo: {field} incorrecto en {item['period']}")
+    if observations and (observations[0].get("value") != 341465 or observations[-1].get("period") != "2026-07" or observations[-1].get("value") != 270835):
+        errors.append("empleo: valores oficiales de control incorrectos")
+    return errors
+
 def validate(path: Path, allow_demo: bool = False):
     data = json.loads(path.read_text(encoding="utf-8"))
+    if path.name == "empleo.json":
+        return validate_employment(data)
     errors = []
     if data.get("demo") and not allow_demo:
         errors.append("contiene datos DEMO")
@@ -64,7 +101,7 @@ def validate(path: Path, allow_demo: bool = False):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--allow-demo", action="store_true", help="permite validar el esquema transitorio DEMO")
-    parser.add_argument("files", nargs="*", type=Path, default=[Path("data/inflacion.json"), Path("data/salarios.json")])
+    parser.add_argument("files", nargs="*", type=Path, default=[Path("data/inflacion.json"), Path("data/salarios.json"), Path("data/empleo.json")])
     args = parser.parse_args()
     failed = False
     for path in args.files:
