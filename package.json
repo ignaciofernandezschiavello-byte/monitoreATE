@@ -1,0 +1,1 @@
+{"private":true,"type":"module","scripts":{"test":"node tests/calculations.test.mjs && python3 scripts/validate-data.py --allow-demo"}}
