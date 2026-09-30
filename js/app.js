@@ -4,6 +4,9 @@ import {lineChart} from './charts.js';
 const CONFIG = { demoMode: false };
 const $ = selector => document.querySelector(selector);
 const money = value => new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(value);
+const people = value => new Intl.NumberFormat('es-AR',{maximumFractionDigits:0}).format(value);
+const signedPeople = value => new Intl.NumberFormat('es-AR',{maximumFractionDigits:0,signDisplay:'exceptZero'}).format(value);
+const employmentPercent = value => value == null?'—':`${new Intl.NumberFormat('es-AR',{minimumFractionDigits:1,maximumFractionDigits:1,signDisplay:'exceptZero'}).format(value)} %`;
 async function loadData(file){const response=await fetch(new URL(`../data/${file}`,import.meta.url));if(!response.ok)throw new Error(`No se pudo cargar ${file}`);return response.json()}
 
 function sourceLink(series){return series.sourceUrl?`<a href="${series.sourceUrl}" target="_blank" rel="noopener">${series.sourceName}</a>`:series.sourceName}
@@ -12,7 +15,7 @@ function metricCard(id,title,primary,details,period,series){return `<article cla
 async function init(){
   try {
     const [inflation,salaries,employment,agreements]=await Promise.all(['inflacion.json','salarios.json','empleo.json','paritarias.json'].map(loadData));
-    if (CONFIG.demoMode !== Boolean(inflation.demo || salaries.demo)) throw new Error('CONFIG.demoMode no coincide con el estado de los archivos');
+    if (CONFIG.demoMode !== Boolean(inflation.demo || salaries.demo || employment.demo)) throw new Error('CONFIG.demoMode no coincide con el estado de los archivos');
     validateDataset(inflation,{allowDemo:CONFIG.demoMode}); validateDataset(salaries,{allowDemo:CONFIG.demoMode});
     $('#demo-banner').hidden=!CONFIG.demoMode; const series=Object.fromEntries([...inflation.series,...salaries.series].map(s=>[s.id,{...s,observations:toBase100(s.observations)}]));
     const salarySeries=series.salario_publico, salary=salarySeries.observations, ipc=series.ipc.observations, food=series.alimentos.observations, services=series.servicios.observations, real=realSalary(salary,ipc);
@@ -25,9 +28,25 @@ async function init(){
     const chartSeries=[['Salario público',salary],['IPC general',ipc],['IPC alimentos',food],['IPC servicios',services]].map(([name,o])=>({name,labels:o.map(x=>x.period),values:o.map(x=>x.value)}));
     lineChart($('#main-chart'),chartSeries); lineChart($('#real-chart'),[{name:'Salario real',labels:real.map(x=>x.period),values:real.map(x=>x.value)}]);
     const gapsGeneral=gap(salary,ipc),gapsFood=gap(salary,food); lineChart($('#gap-chart'),[['Brecha vs IPC',gapsGeneral],['Brecha vs alimentos',gapsFood]].map(([name,o])=>({name,labels:o.map(x=>x.period),values:o.map(x=>x.value)})),{baseline:false,signed:true});
-    setupCalculator({ipc,alimentos:food}); setupDataTable(series); renderAgreements(agreements); $('#employment-status').textContent=employment.series.length?'Series disponibles':'Datos pendientes de incorporación';
+    setupCalculator({ipc,alimentos:food}); setupDataTable(series); setupEmployment(employment); renderAgreements(agreements);
     $('#method-update').textContent=new Date().toLocaleDateString('es-AR',{timeZone:'UTC'});
   } catch(error){console.error(error);$('#load-error').hidden=false;$('#load-error').textContent='No fue posible cargar los datos. Ejecutá el sitio mediante un servidor local.'}
+}
+
+function setupEmployment(data){
+  if(data.demo!==false||data.source!=='INDEC'||data.basePeriod!=='2023-12'||!data.series.length)throw new Error('Serie de empleo inválida');
+  const observations=data.series,last=observations.at(-1),periods=observations.map(item=>item.period);
+  if(data.latestPeriod!==last.period||new Set(periods).size!==periods.length||periods.some((period,index)=>index&&period<=periods[index-1])||observations.some(item=>!Number.isFinite(item.value)||item.value<=0))throw new Error('Serie de empleo inconsistente');
+  const card=(title,value,secondary,footer)=>`<article class="metric-card"><div class="eyebrow">${title}</div><strong class="metric-value">${value}</strong>${secondary?`<div class="employment-secondary">${secondary}</div>`:''}<footer>${footer}</footer></article>`;
+  $('#employment-metrics').innerHTML=[
+    card('Dotación actual',`${people(last.value)} <small>personas</small>`,'',`Último dato: ${formatPeriod(last.period)}`),
+    card('Variación desde dic. 2023',`${signedPeople(last.changeFromBase)} <small>personas</small>`,employmentPercent(last.changeFromBasePct),'Referencia: diciembre de 2023'),
+    card('Variación último mes',`${signedPeople(last.monthlyChange)} <small>personas</small>`,employmentPercent(last.monthlyChangePct),`Variación de ${formatPeriod(last.period)}`)
+  ].join('');
+  const tooltip=(label,index)=>{const item=observations[index],monthly=item.monthlyChange==null?'—':`${signedPeople(item.monthlyChange)} personas`,fromBase=`${signedPeople(item.changeFromBase)} personas`;return `<strong>${formatPeriod(label)}${item.estimatedByImputation?' (i)':''}</strong><span>Dotación: <b>${people(item.value)} personas</b></span><span>Variación mensual: <b>${monthly}</b></span><span>Variación mensual %: <b>${employmentPercent(item.monthlyChangePct)}</b></span><span>Variación desde dic. 2023: <b>${fromBase}</b></span><span>Variación desde dic. 2023 %: <b>${employmentPercent(item.changeFromBasePct)}</b></span>`};
+  lineChart($('#employment-chart'),[{name:'Dotación',labels:periods,values:observations.map(item=>item.value)}],{baseline:false,dataScale:true,valueFormatter:value=>new Intl.NumberFormat('es-AR',{notation:'compact',maximumFractionDigits:0}).format(value),tooltipBuilder:tooltip});
+  $('#employment-body').innerHTML=observations.map(item=>`<tr><td>${formatPeriod(item.period)}${item.estimatedByImputation?' (i)':''}</td><td>${people(item.value)}</td><td>${item.monthlyChange==null?'—':signedPeople(item.monthlyChange)}</td><td>${employmentPercent(item.monthlyChangePct)}</td><td>${signedPeople(item.changeFromBase)}</td><td>${employmentPercent(item.changeFromBasePct)}</td></tr>`).join('');
+  $('#download-employment-csv').onclick=()=>{const fields=['period','value','monthlyChange','monthlyChangePct','changeFromBase','changeFromBasePct'],rows=[fields,...observations.map(item=>fields.map(field=>item[field]??''))],blob=new Blob([rows.map(row=>row.map(value=>`"${value}"`).join(',')).join('\n')],{type:'text/csv;charset=utf-8'}),link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='monitoreate-empleo.csv';link.click();URL.revokeObjectURL(link.href)};
 }
 
 function setupCalculator(series){const form=$('#calculator');form.onsubmit=e=>{e.preventDefault();const base=Number($('#base-salary').value),current=Number($('#current-salary').value||0),indicator=$('#calc-index').value,data=series[indicator],target=base*data.at(-1).value/100,difference=current-target,percent=current?difference/target*100:null;$('#calculator-result').hidden=false;$('#calculator-result').innerHTML=`<span>Para mantener el mismo poder adquisitivo de diciembre de 2023, hoy deberías cobrar:</span><strong>${money(target)}</strong>${current?`<div class="comparison ${difference<0?'negative':'positive'}">${difference<0?'Pérdida':'Ganancia'}: ${money(Math.abs(difference))} (${formatPercent(Math.abs(percent))})</div>`:'<small>Ingresá tu salario actual para calcular la diferencia.</small>'}`}}

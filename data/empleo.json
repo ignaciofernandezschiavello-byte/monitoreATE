@@ -1,1 +1,333 @@
-{"demo":false,"status":"pending","lastUpdated":null,"series":[]}
+{
+  "demo": false,
+  "source": "INDEC",
+  "sourceUrl": "https://www.indec.gob.ar/",
+  "title": "Dotación de personal de la Administración Pública Nacional, empresas y sociedades",
+  "unit": "personas",
+  "basePeriod": "2023-12",
+  "latestPeriod": "2026-07",
+  "generatedFrom": "data/raw/indec/serie_dotacion_apn.xlsx",
+  "officialLocation": "Hoja 'serie  cuadro 1', períodos en fila 4 y dotación total en fila 7",
+  "series": [
+    {
+      "period": "2023-12",
+      "value": 341465,
+      "monthlyChange": null,
+      "monthlyChangePct": null,
+      "changeFromBase": 0,
+      "changeFromBasePct": 0.0,
+      "estimatedByImputation": true,
+      "originalLabel": "dic-23 (i)"
+    },
+    {
+      "period": "2024-01",
+      "value": 333784,
+      "monthlyChange": -7681,
+      "monthlyChangePct": -2.249425270525529,
+      "changeFromBase": -7681,
+      "changeFromBasePct": -2.249425270525529,
+      "estimatedByImputation": true,
+      "originalLabel": "ene-24 (i)"
+    },
+    {
+      "period": "2024-02",
+      "value": 332603,
+      "monthlyChange": -1181,
+      "monthlyChangePct": -0.3538216331519739,
+      "changeFromBase": -8862,
+      "changeFromBasePct": -2.595287950448799,
+      "estimatedByImputation": true,
+      "originalLabel": "feb-24 (i)"
+    },
+    {
+      "period": "2024-03",
+      "value": 330087,
+      "monthlyChange": -2516,
+      "monthlyChangePct": -0.7564573981593714,
+      "changeFromBase": -11378,
+      "changeFromBasePct": -3.3321131009034555,
+      "estimatedByImputation": true,
+      "originalLabel": "mar-24 (i)"
+    },
+    {
+      "period": "2024-04",
+      "value": 322136,
+      "monthlyChange": -7951,
+      "monthlyChangePct": -2.4087589029558876,
+      "changeFromBase": -19329,
+      "changeFromBasePct": -5.660609432884778,
+      "estimatedByImputation": true,
+      "originalLabel": "abr-24 (i)"
+    },
+    {
+      "period": "2024-05",
+      "value": 316106,
+      "monthlyChange": -6030,
+      "monthlyChangePct": -1.8718801996672196,
+      "changeFromBase": -25359,
+      "changeFromBasePct": -7.4265298053973305,
+      "estimatedByImputation": true,
+      "originalLabel": "may-24 (i)"
+    },
+    {
+      "period": "2024-06",
+      "value": 314110,
+      "monthlyChange": -1996,
+      "monthlyChangePct": -0.6314337595616615,
+      "changeFromBase": -27355,
+      "changeFromBasePct": -8.011069948603811,
+      "estimatedByImputation": true,
+      "originalLabel": "jun-24 (i)"
+    },
+    {
+      "period": "2024-07",
+      "value": 310515,
+      "monthlyChange": -3595,
+      "monthlyChangePct": -1.1445035178759055,
+      "changeFromBase": -30950,
+      "changeFromBasePct": -9.063886489098438,
+      "estimatedByImputation": true,
+      "originalLabel": "jul-24 (i)"
+    },
+    {
+      "period": "2024-08",
+      "value": 309841,
+      "monthlyChange": -674,
+      "monthlyChangePct": -0.2170587572258964,
+      "changeFromBase": -31624,
+      "changeFromBasePct": -9.261271286954742,
+      "estimatedByImputation": true,
+      "originalLabel": "ago-24 (i)"
+    },
+    {
+      "period": "2024-09",
+      "value": 306870,
+      "monthlyChange": -2971,
+      "monthlyChangePct": -0.9588789088597061,
+      "changeFromBase": -34595,
+      "changeFromBasePct": -10.131345818751559,
+      "estimatedByImputation": true,
+      "originalLabel": "sep-24 (i)"
+    },
+    {
+      "period": "2024-10",
+      "value": 305561,
+      "monthlyChange": -1309,
+      "monthlyChangePct": -0.4265649949489969,
+      "changeFromBase": -35904,
+      "changeFromBasePct": -10.514694038920535,
+      "estimatedByImputation": true,
+      "originalLabel": "oct-24 (i)"
+    },
+    {
+      "period": "2024-11",
+      "value": 304037,
+      "monthlyChange": -1524,
+      "monthlyChangePct": -0.498754749460828,
+      "changeFromBase": -37428,
+      "changeFromBasePct": -10.961006252470973,
+      "estimatedByImputation": true,
+      "originalLabel": "nov-24 (i)"
+    },
+    {
+      "period": "2024-12",
+      "value": 301855,
+      "monthlyChange": -2182,
+      "monthlyChangePct": -0.7176758091942737,
+      "changeFromBase": -39610,
+      "changeFromBasePct": -11.600017571346989,
+      "estimatedByImputation": true,
+      "originalLabel": "dic-24 (i)"
+    },
+    {
+      "period": "2025-01",
+      "value": 299963,
+      "monthlyChange": -1892,
+      "monthlyChangePct": -0.6267910089281292,
+      "changeFromBase": -41502,
+      "changeFromBasePct": -12.154100713103833,
+      "estimatedByImputation": true,
+      "originalLabel": "ene-25 (i)"
+    },
+    {
+      "period": "2025-02",
+      "value": 297685,
+      "monthlyChange": -2278,
+      "monthlyChangePct": -0.7594269959961708,
+      "changeFromBase": -43780,
+      "changeFromBasePct": -12.821226187164136,
+      "estimatedByImputation": true,
+      "originalLabel": "feb-25 (i)"
+    },
+    {
+      "period": "2025-03",
+      "value": 294489,
+      "monthlyChange": -3196,
+      "monthlyChangePct": -1.0736180862320865,
+      "changeFromBase": -46976,
+      "changeFromBasePct": -13.757193270174106,
+      "estimatedByImputation": true,
+      "originalLabel": "mar-25 (i)"
+    },
+    {
+      "period": "2025-04",
+      "value": 292799,
+      "monthlyChange": -1690,
+      "monthlyChangePct": -0.5738754248885369,
+      "changeFromBase": -48666,
+      "changeFromBasePct": -14.25211954373069,
+      "estimatedByImputation": true,
+      "originalLabel": "abr-25 (i)"
+    },
+    {
+      "period": "2025-05",
+      "value": 291015,
+      "monthlyChange": -1784,
+      "monthlyChangePct": -0.6092916984006047,
+      "changeFromBase": -50450,
+      "changeFromBasePct": -14.774574260905215,
+      "estimatedByImputation": true,
+      "originalLabel": "may-25 (i)"
+    },
+    {
+      "period": "2025-06",
+      "value": 289174,
+      "monthlyChange": -1841,
+      "monthlyChangePct": -0.6326134391698046,
+      "changeFromBase": -52291,
+      "changeFromBasePct": -15.313721757720412,
+      "estimatedByImputation": true,
+      "originalLabel": "jun-25 (i)"
+    },
+    {
+      "period": "2025-07",
+      "value": 287651,
+      "monthlyChange": -1523,
+      "monthlyChangePct": -0.5266725224259416,
+      "changeFromBase": -53814,
+      "changeFromBasePct": -15.75974111548768,
+      "estimatedByImputation": true,
+      "originalLabel": "jul-25 (i)"
+    },
+    {
+      "period": "2025-08",
+      "value": 285694,
+      "monthlyChange": -1957,
+      "monthlyChangePct": -0.6803383266527852,
+      "changeFromBase": -55771,
+      "changeFromBasePct": -16.33285988315054,
+      "estimatedByImputation": true,
+      "originalLabel": "ago-25 (i)"
+    },
+    {
+      "period": "2025-09",
+      "value": 283551,
+      "monthlyChange": -2143,
+      "monthlyChangePct": -0.7501032573312694,
+      "changeFromBase": -57914,
+      "changeFromBasePct": -16.96044982648295,
+      "estimatedByImputation": true,
+      "originalLabel": "sep-25 (i)"
+    },
+    {
+      "period": "2025-10",
+      "value": 282573,
+      "monthlyChange": -978,
+      "monthlyChangePct": -0.3449114974025891,
+      "changeFromBase": -58892,
+      "changeFromBasePct": -17.246862782422802,
+      "estimatedByImputation": true,
+      "originalLabel": "oct-25 (i)"
+    },
+    {
+      "period": "2025-11",
+      "value": 281670,
+      "monthlyChange": -903,
+      "monthlyChangePct": -0.31956344024376415,
+      "changeFromBase": -59795,
+      "changeFromBasePct": -17.51131155462492,
+      "estimatedByImputation": true,
+      "originalLabel": "nov-25 (i)"
+    },
+    {
+      "period": "2025-12",
+      "value": 280118,
+      "monthlyChange": -1552,
+      "monthlyChangePct": -0.5509993964568416,
+      "changeFromBase": -61347,
+      "changeFromBasePct": -17.965823730104113,
+      "estimatedByImputation": true,
+      "originalLabel": "dic-25 (i)"
+    },
+    {
+      "period": "2026-01",
+      "value": 278844,
+      "monthlyChange": -1274,
+      "monthlyChangePct": -0.4548083307748918,
+      "changeFromBase": -62621,
+      "changeFromBasePct": -18.33892199786216,
+      "estimatedByImputation": true,
+      "originalLabel": "ene-26 (i)"
+    },
+    {
+      "period": "2026-02",
+      "value": 276922,
+      "monthlyChange": -1922,
+      "monthlyChangePct": -0.6892742895669213,
+      "changeFromBase": -64543,
+      "changeFromBasePct": -18.901790813114083,
+      "estimatedByImputation": true,
+      "originalLabel": "feb-26 (i)"
+    },
+    {
+      "period": "2026-03",
+      "value": 276223,
+      "monthlyChange": -699,
+      "monthlyChangePct": -0.2524176482908591,
+      "changeFromBase": -65242,
+      "changeFromBasePct": -19.106497005549617,
+      "estimatedByImputation": true,
+      "originalLabel": "mar-26 (i)"
+    },
+    {
+      "period": "2026-04",
+      "value": 274798,
+      "monthlyChange": -1425,
+      "monthlyChangePct": -0.5158875256586204,
+      "changeFromBase": -66667,
+      "changeFromBasePct": -19.52381649656627,
+      "estimatedByImputation": true,
+      "originalLabel": "abr-26 (i)"
+    },
+    {
+      "period": "2026-05",
+      "value": 273354,
+      "monthlyChange": -1444,
+      "monthlyChangePct": -0.5254768957561606,
+      "changeFromBase": -68111,
+      "changeFromBasePct": -19.946700247463134,
+      "estimatedByImputation": true,
+      "originalLabel": "may-26 (i)"
+    },
+    {
+      "period": "2026-06",
+      "value": 271842,
+      "monthlyChange": -1512,
+      "monthlyChangePct": -0.5531289097653547,
+      "changeFromBase": -69623,
+      "changeFromBasePct": -20.38949819161554,
+      "estimatedByImputation": true,
+      "originalLabel": "jun-26 (i)"
+    },
+    {
+      "period": "2026-07",
+      "value": 270835,
+      "monthlyChange": -1007,
+      "monthlyChangePct": -0.3704357678357306,
+      "changeFromBase": -70630,
+      "changeFromBasePct": -20.684403965267308,
+      "estimatedByImputation": true,
+      "originalLabel": "jul-26 (i)"
+    }
+  ]
+}
