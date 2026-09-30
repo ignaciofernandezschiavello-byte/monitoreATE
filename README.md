@@ -2,32 +2,38 @@
 
 Observatorio web de indicadores económicos y laborales relevantes para trabajadores del sector público argentino. La interfaz compara salarios, precios y poder adquisitivo con una metodología común: **diciembre de 2023 = 100**.
 
-> **Estado de los datos (30/09/2026):** los archivos publicados siguen siendo **DEMO**. En esta sesión el acceso de red a `indec.gob.ar` fue rechazado con HTTP 403 antes de recibir los archivos. Para respetar el criterio de no inventar cifras, no se reemplazó ninguna observación ni se desactivó la advertencia. La aplicación y los validadores ya están preparados para rechazar mezclas de datos oficiales y DEMO.
+## Estado de los datos
 
-## Funcionalidades
+El dashboard principal publica series oficiales de **INDEC** transformadas de manera reproducible desde los cuatro CSV auditados y conservados en `data/raw/indec/`. No descarga archivos durante la generación. Empleo público y paritarias continúan como “Datos pendientes de incorporación”: no contienen datos inventados ni se consideran series DEMO.
 
-- Dashboard responsive con cinco indicadores, gráficos interactivos y fecha final independiente por serie.
-- Comparación de salario público, IPC general, alimentos y servicios.
-- Índice monitoreATE de Salario Real, calculado sólo para períodos comunes entre salario e IPC.
-- Calculadora de poder adquisitivo, tablas y descarga de CSV.
-- Enlaces de fuente en las tarjetas cuando el JSON contiene una URL oficial.
-- Empleo público y paritarias permanecen identificados como pendientes.
+| Indicador | Selección oficial | Cobertura publicada |
+| --- | --- | --- |
+| IPC general | `Codigo=0`, `Descripcion=NIVEL GENERAL`, clasificador COICOP, región Nacional | 2023-12 a 2026-08 |
+| IPC alimentos | `Codigo=01`, “Alimentos y bebidas no alcohólicas”, clasificador COICOP, región Nacional | 2023-12 a 2026-08 |
+| IPC servicios | `Codigo=S`, clasificador “Bienes y servicios”, región Nacional | 2023-12 a 2026-08 |
+| Salario público | Columna `IS_sector_publico` | 2023-12 a 2026-07 |
 
-## Fuentes oficiales previstas
+“Servicios” es la denominación usada por monitoreATE para el agregado oficial `Codigo=S`. Su campo `Descripcion` está vacío en el CSV: la serie se selecciona por código, clasificador y región, y **no** se construye sumando divisiones. No se publican índices para los subsectores público nacional y provincial porque los archivos auditados sólo incluyen sus variaciones, no niveles oficiales; monitoreATE no reconstruye esos niveles.
 
-| Indicador | Archivo/categoría que debe verificarse antes de publicar |
-| --- | --- |
-| IPC nivel general | Serie histórica de **IPC nacional**, categoría “Nivel general”, publicada en la [página oficial del IPC](https://www.indec.gob.ar/indec/web/Nivel4-Tema-3-5-31) |
-| IPC alimentos | Serie histórica de **IPC nacional**, división “Alimentos y bebidas no alcohólicas”, misma página oficial |
-| IPC servicios | Serie histórica de **IPC nacional**, categoría “Servicios”, misma página oficial |
-| Salario público | [`indice_salarios.csv`](https://www.indec.gob.ar/ftp/cuadros/sociedad/indice_salarios.csv), columna de sector público que debe seleccionarse por el texto exacto de su encabezado |
-| Variaciones salariales (control) | [`variacion_indice_salarios.csv`](https://www.indec.gob.ar/ftp/cuadros/sociedad/variacion_indice_salarios.csv); no sustituye al índice original |
+## Flujo reproducible de actualización
 
-No se documenta aún un nombre de columna salarial ni valores finales porque no pudieron inspeccionarse los archivos oficiales. Total, Nacional y Provincial se incorporarán únicamente si sus encabezados y cobertura desde 2023-12 se verifican de forma consistente.
+```text
+CSV oficial INDEC local → scripts/update-data.py → JSON normalizado → validación → visualización
+```
 
-## Metodología y esquema normalizado
+Para una futura actualización:
 
-Los valores de origen nunca se sobrescriben. Cada observación oficial debe conservar:
+1. Reemplazar los CSV de `data/raw/indec/` por las nuevas versiones oficiales, conservando los nombres esperados.
+2. Ejecutar `python3 scripts/update-data.py`.
+3. Ejecutar `python3 scripts/validate-data.py` y `npm test`.
+4. Revisar el diff, los últimos períodos, los valores de control y la visualización local.
+5. Publicar únicamente después de que todos los controles resulten satisfactorios.
+
+El transformador contempla archivos IPC en Windows-1252, separador `;` y coma decimal. Identifica las columnas por encabezado y las filas por filtros explícitos, recorta desde diciembre de 2023, ordena cronológicamente y rechaza duplicados. Produce `data/inflacion.json` y `data/salarios.json` sin intervención manual.
+
+## Metodología y esquema
+
+Cada observación conserva el nivel de origen y el índice derivado:
 
 ```json
 {
@@ -37,41 +43,29 @@ Los valores de origen nunca se sobrescriben. Cada observación oficial debe cons
 }
 ```
 
-La serie conserva además `sourceName`, `sourceUrl` y `lastUpdated`. El índice visible se calcula (y se valida contra `indexDec2023`) así:
+Cada serie incluye `sourceName`, `sourceUrl`, `lastUpdated` y la selección o columna oficial utilizada. Las fórmulas son:
 
 ```text
-indexDec2023(t) = officialValue(t) / officialValue(2023-12) * 100
-ISR(t) = indexSalary(t) / indexIPCGeneral(t) * 100
+indexDec2023(t) = officialValue(t) / officialValue(2023-12) × 100
+ISR(t) = indexSalary(t) / indexIPCGeneral(t) × 100
 ```
 
-Diciembre de 2023 debe resultar exactamente 100. El ISR no se almacena: se obtiene dinámicamente mediante la intersección de períodos. No se crean meses ausentes, no se interpolan valores y no se arrastra el último dato. Las variaciones mensual e interanual se calculan a partir de los valores oficiales (el rebasing no altera esas tasas).
+Diciembre de 2023 queda exactamente en 100. El salario real se calcula en el navegador sólo para la intersección de períodos: IPC puede continuar hasta agosto de 2026 mientras salario público e ISR terminan en julio. No se crean, interpolan ni arrastran observaciones. Las variaciones mensual, interanual y acumulada se calculan desde `officialValue`, no desde índices redondeados.
 
-## Flujo de actualización preparado
+Fuentes oficiales:
 
-```text
-fuente oficial INDEC → inspección/transformación reproducible → JSON normalizado → validación → visualización
-```
-
-Antes de cambiar `demo` y `CONFIG.demoMode` a `false` se debe:
-
-1. Descargar personalmente los archivos enlazados arriba desde INDEC.
-2. Identificar columnas por encabezado, nunca por posición, y documentarlas.
-3. Generar observaciones desde 2023-12 hasta el último período propio de cada serie.
-4. Ejecutar `python3 scripts/validate-data.py` y las pruebas.
-5. Contrastar varias filas con la publicación de INDEC y registrar fecha, valor base y último valor.
-6. Desactivar modo DEMO sólo cuando las cuatro series principales sean oficiales.
-
-No se agregó un cron: primero deben confirmarse la estructura y estabilidad de los endpoints. `scripts/validate-data.py` es deliberadamente estricto y termina con error; nunca corrige ni sustituye datos.
+- [IPC nacional — INDEC](https://www.indec.gob.ar/indec/web/Nivel4-Tema-3-5-31)
+- [Índice de salarios — INDEC](https://www.indec.gob.ar/indec/web/Nivel4-Tema-4-31-61)
 
 ## Validaciones
 
 ```bash
+python3 scripts/update-data.py
+python3 scripts/validate-data.py
 npm test
-python3 scripts/validate-data.py                 # debe fallar mientras los JSON sean DEMO
-python3 scripts/validate-data.py --allow-demo    # control transitorio de estructura
 ```
 
-Se comprueba base presente y exactamente igual a 100, orden, duplicados, valores nulos, metadatos de fuente, consistencia del índice rebasado y ausencia de DEMO en modo oficial. La función de salario real alinea por período, de modo que no puede extenderse más allá del último mes común.
+El validador comprueba fuente oficial, metadatos, base exacta, orden, duplicados, continuidad mensual, valores finitos, consistencia del rebasing y valores finales de control. También confirma que el ISR termina en julio de 2026 alrededor de 100,12.
 
 ## Ejecutar localmente
 
@@ -86,11 +80,13 @@ Visitar `http://localhost:8000/`. Los recursos usan rutas relativas compatibles 
 ```text
 index.html                 Interfaz y metodología
 css/styles.css             Estilos responsive
-js/app.js                  Carga, validación, renderizado e interacciones
-js/charts.js               Gráficos Canvas
-js/calculations.js         Rebasing, validaciones, ISR y variaciones
-data/inflacion.json        Series DEMO transitorias de precios
-data/salarios.json         Serie DEMO transitoria salarial
-scripts/validate-data.py   Validación reproducible de JSON normalizados
+js/app.js                  Carga, validación, tarjetas, tabla y calculadora
+js/charts.js               Gráficos Canvas con períodos propios por serie
+js/calculations.js         Rebasing, ISR y variaciones desde niveles oficiales
+data/raw/indec/            CSV oficiales locales auditados
+data/inflacion.json        Series normalizadas oficiales de precios
+data/salarios.json         Serie normalizada oficial de salario público
+scripts/update-data.py     Transformación reproducible CSV → JSON
+scripts/validate-data.py   Validación reproducible de los JSON
 tests/                     Pruebas de cálculo y validación
 ```
