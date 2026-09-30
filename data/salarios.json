@@ -1,1 +1,181 @@
-{"demo":true,"series":[{"id":"salario_publico","name":"Salario público","sourceName":"Fuente pendiente de validación","sourceUrl":"","lastUpdated":"2025-06-30","observations":[{"period":"2023-12","value":100},{"period":"2024-01","value":112},{"period":"2024-02","value":125},{"period":"2024-03","value":138},{"period":"2024-04","value":150},{"period":"2024-05","value":161},{"period":"2024-06","value":171},{"period":"2024-07","value":181},{"period":"2024-08","value":190},{"period":"2024-09","value":199},{"period":"2024-10","value":207},{"period":"2024-11","value":215},{"period":"2024-12","value":223},{"period":"2025-01","value":230},{"period":"2025-02","value":237},{"period":"2025-03","value":244},{"period":"2025-04","value":251},{"period":"2025-05","value":258},{"period":"2025-06","value":265}]}],"plannedSeries":["Trabajadores privados registrados","RIPTE","Salario mínimo"]}
+{
+  "demo": false,
+  "sourceName": "INDEC",
+  "generatedFrom": "data/raw/indec/indice_salarios.csv",
+  "series": [
+    {
+      "id": "salario_publico",
+      "name": "Salario público",
+      "sourceName": "INDEC",
+      "sourceUrl": "https://www.indec.gob.ar/indec/web/Nivel4-Tema-4-31-61",
+      "lastUpdated": "2026-07",
+      "officialColumn": "IS_sector_publico",
+      "observations": [
+        {
+          "period": "2023-12",
+          "officialValue": 2374.02,
+          "indexDec2023": 100.0
+        },
+        {
+          "period": "2024-01",
+          "officialValue": 2660.85,
+          "indexDec2023": 112.08203806202137
+        },
+        {
+          "period": "2024-02",
+          "officialValue": 3062.83,
+          "indexDec2023": 129.014498614165
+        },
+        {
+          "period": "2024-03",
+          "officialValue": 3400.49,
+          "indexDec2023": 143.23763068550392
+        },
+        {
+          "period": "2024-04",
+          "officialValue": 3656.07,
+          "indexDec2023": 154.00333611342788
+        },
+        {
+          "period": "2024-05",
+          "officialValue": 3957.89,
+          "indexDec2023": 166.7167926133731
+        },
+        {
+          "period": "2024-06",
+          "officialValue": 4113.99,
+          "indexDec2023": 173.2921373872166
+        },
+        {
+          "period": "2024-07",
+          "officialValue": 4390.43,
+          "indexDec2023": 184.93652117505331
+        },
+        {
+          "period": "2024-08",
+          "officialValue": 4594.73,
+          "indexDec2023": 193.5421774037287
+        },
+        {
+          "period": "2024-09",
+          "officialValue": 4774.83,
+          "indexDec2023": 201.12846564055906
+        },
+        {
+          "period": "2024-10",
+          "officialValue": 4982.02,
+          "indexDec2023": 209.8558563112358
+        },
+        {
+          "period": "2024-11",
+          "officialValue": 5117.7,
+          "indexDec2023": 215.57105668865466
+        },
+        {
+          "period": "2024-12",
+          "officialValue": 5205.72,
+          "indexDec2023": 219.27869183915888
+        },
+        {
+          "period": "2025-01",
+          "officialValue": 5253.88,
+          "indexDec2023": 221.30731838821913
+        },
+        {
+          "period": "2025-02",
+          "officialValue": 5488.58,
+          "indexDec2023": 231.19350300334455
+        },
+        {
+          "period": "2025-03",
+          "officialValue": 5668.51,
+          "indexDec2023": 238.7726303906454
+        },
+        {
+          "period": "2025-04",
+          "officialValue": 5797.13,
+          "indexDec2023": 244.19044489936903
+        },
+        {
+          "period": "2025-05",
+          "officialValue": 5987.03,
+          "indexDec2023": 252.18953505025232
+        },
+        {
+          "period": "2025-06",
+          "officialValue": 6063.83,
+          "indexDec2023": 255.42455413181017
+        },
+        {
+          "period": "2025-07",
+          "officialValue": 6202.12,
+          "indexDec2023": 261.2496946108289
+        },
+        {
+          "period": "2025-08",
+          "officialValue": 6375.31,
+          "indexDec2023": 268.5449153756077
+        },
+        {
+          "period": "2025-09",
+          "officialValue": 6447.94,
+          "indexDec2023": 271.6042830304715
+        },
+        {
+          "period": "2025-10",
+          "officialValue": 6569.76,
+          "indexDec2023": 276.7356635580155
+        },
+        {
+          "period": "2025-11",
+          "officialValue": 6645.32,
+          "indexDec2023": 279.9184505606524
+        },
+        {
+          "period": "2025-12",
+          "officialValue": 6710.79,
+          "indexDec2023": 282.67622008239186
+        },
+        {
+          "period": "2026-01",
+          "officialValue": 6832.27,
+          "indexDec2023": 287.79327891087695
+        },
+        {
+          "period": "2026-02",
+          "officialValue": 6991.42,
+          "indexDec2023": 294.49709774980835
+        },
+        {
+          "period": "2026-03",
+          "officialValue": 7344.33,
+          "indexDec2023": 309.3626001465868
+        },
+        {
+          "period": "2026-04",
+          "officialValue": 7515.45,
+          "indexDec2023": 316.5706270376829
+        },
+        {
+          "period": "2026-05",
+          "officialValue": 7628.25,
+          "indexDec2023": 321.32206131372106
+        },
+        {
+          "period": "2026-06",
+          "officialValue": 7889.42,
+          "indexDec2023": 332.32323232323233
+        },
+        {
+          "period": "2026-07",
+          "officialValue": 8123.88,
+          "indexDec2023": 342.1993075037279
+        }
+      ]
+    }
+  ],
+  "excludedSeries": {
+    "subsector_publico_nacional": "El CSV auditado sólo contiene variaciones, no niveles oficiales.",
+    "subsector_publico_provincial": "El CSV auditado sólo contiene variaciones, no niveles oficiales."
+  }
+}

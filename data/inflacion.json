@@ -1,8 +1,547 @@
 {
-  "demo": true,
+  "demo": false,
+  "sourceName": "INDEC",
+  "generatedFrom": "data/raw/indec/serie_ipc_divisiones (1).csv",
   "series": [
-    {"id":"ipc","name":"IPC general","sourceName":"Fuente pendiente de validación","sourceUrl":"","lastUpdated":"2025-06-30","observations":[{"period":"2023-12","value":100},{"period":"2024-01","value":120.6},{"period":"2024-02","value":136.6},{"period":"2024-03","value":151.7},{"period":"2024-04","value":164.9},{"period":"2024-05","value":172.4},{"period":"2024-06","value":180.3},{"period":"2024-07","value":187.5},{"period":"2024-08","value":195.3},{"period":"2024-09","value":202.1},{"period":"2024-10","value":207.6},{"period":"2024-11","value":212.6},{"period":"2024-12","value":218.5},{"period":"2025-01","value":223.3},{"period":"2025-02","value":228.6},{"period":"2025-03","value":235.5},{"period":"2025-04","value":242.6},{"period":"2025-05","value":246.2},{"period":"2025-06","value":250.1}]},
-    {"id":"alimentos","name":"IPC alimentos y bebidas no alcohólicas","sourceName":"Fuente pendiente de validación","sourceUrl":"","lastUpdated":"2025-06-30","observations":[{"period":"2023-12","value":100},{"period":"2024-01","value":118},{"period":"2024-02","value":132},{"period":"2024-03","value":146},{"period":"2024-04","value":155},{"period":"2024-05","value":161},{"period":"2024-06","value":168},{"period":"2024-07","value":174},{"period":"2024-08","value":181},{"period":"2024-09","value":187},{"period":"2024-10","value":192},{"period":"2024-11","value":196},{"period":"2024-12","value":201},{"period":"2025-01","value":205},{"period":"2025-02","value":209},{"period":"2025-03","value":214},{"period":"2025-04","value":219},{"period":"2025-05","value":222},{"period":"2025-06","value":225}]},
-    {"id":"servicios","name":"IPC servicios","sourceName":"Fuente pendiente de validación","sourceUrl":"","lastUpdated":"2025-06-30","observations":[{"period":"2023-12","value":100},{"period":"2024-01","value":114},{"period":"2024-02","value":127},{"period":"2024-03","value":141},{"period":"2024-04","value":157},{"period":"2024-05","value":170},{"period":"2024-06","value":183},{"period":"2024-07","value":195},{"period":"2024-08","value":207},{"period":"2024-09","value":219},{"period":"2024-10","value":230},{"period":"2024-11","value":240},{"period":"2024-12","value":250},{"period":"2025-01","value":260},{"period":"2025-02","value":270},{"period":"2025-03","value":280},{"period":"2025-04","value":291},{"period":"2025-05","value":301},{"period":"2025-06","value":311}]}
+    {
+      "id": "ipc",
+      "name": "IPC general",
+      "sourceName": "INDEC",
+      "sourceUrl": "https://www.indec.gob.ar/indec/web/Nivel4-Tema-3-5-31",
+      "lastUpdated": "2026-08",
+      "officialSeries": {
+        "Codigo": "0",
+        "Descripcion": "NIVEL GENERAL",
+        "Clasificador": "Nivel general y divisiones COICOP",
+        "Region": "Nacional"
+      },
+      "observations": [
+        {
+          "period": "2023-12",
+          "officialValue": 3533.1922,
+          "indexDec2023": 100.0
+        },
+        {
+          "period": "2024-01",
+          "officialValue": 4261.5324,
+          "indexDec2023": 120.61422528896107
+        },
+        {
+          "period": "2024-02",
+          "officialValue": 4825.7881,
+          "indexDec2023": 136.58436413394097
+        },
+        {
+          "period": "2024-03",
+          "officialValue": 5357.0929,
+          "indexDec2023": 151.62189308580494
+        },
+        {
+          "period": "2024-04",
+          "officialValue": 5830.227,
+          "indexDec2023": 165.01301570857086
+        },
+        {
+          "period": "2024-05",
+          "officialValue": 6073.717,
+          "indexDec2023": 171.90451739364758
+        },
+        {
+          "period": "2024-06",
+          "officialValue": 6351.715,
+          "indexDec2023": 179.77269960009534
+        },
+        {
+          "period": "2024-07",
+          "officialValue": 6607.748,
+          "indexDec2023": 187.01920603130506
+        },
+        {
+          "period": "2024-08",
+          "officialValue": 6883.441,
+          "indexDec2023": 194.82214978285074
+        },
+        {
+          "period": "2024-09",
+          "officialValue": 7122.242,
+          "indexDec2023": 201.58093861975584
+        },
+        {
+          "period": "2024-10",
+          "officialValue": 7313.954,
+          "indexDec2023": 207.00696667449904
+        },
+        {
+          "period": "2024-11",
+          "officialValue": 7491.431,
+          "indexDec2023": 212.03010127781897
+        },
+        {
+          "period": "2024-12",
+          "officialValue": 7694.0075,
+          "indexDec2023": 217.76362746413852
+        },
+        {
+          "period": "2025-01",
+          "officialValue": 7864.1257,
+          "indexDec2023": 222.57848582366958
+        },
+        {
+          "period": "2025-02",
+          "officialValue": 8052.9927,
+          "indexDec2023": 227.92399179416282
+        },
+        {
+          "period": "2025-03",
+          "officialValue": 8353.3158,
+          "indexDec2023": 236.4240416923823
+        },
+        {
+          "period": "2025-04",
+          "officialValue": 8585.6078,
+          "indexDec2023": 242.9986061896095
+        },
+        {
+          "period": "2025-05",
+          "officialValue": 8714.4871,
+          "indexDec2023": 246.64627924855037
+        },
+        {
+          "period": "2025-06",
+          "officialValue": 8855.5681,
+          "indexDec2023": 250.63929723381594
+        },
+        {
+          "period": "2025-07",
+          "officialValue": 9023.973,
+          "indexDec2023": 255.40566403378793
+        },
+        {
+          "period": "2025-08",
+          "officialValue": 9193.2441,
+          "indexDec2023": 260.1965469073548
+        },
+        {
+          "period": "2025-09",
+          "officialValue": 9384.0922,
+          "indexDec2023": 265.59812398544295
+        },
+        {
+          "period": "2025-10",
+          "officialValue": 9603.8623,
+          "indexDec2023": 271.81828093020243
+        },
+        {
+          "period": "2025-11",
+          "officialValue": 9841.3581,
+          "indexDec2023": 278.54012866891304
+        },
+        {
+          "period": "2025-12",
+          "officialValue": 10121.3715,
+          "indexDec2023": 286.46535277644955
+        },
+        {
+          "period": "2026-01",
+          "officialValue": 10413.0309,
+          "indexDec2023": 294.720193823591
+        },
+        {
+          "period": "2026-02",
+          "officialValue": 10714.6255,
+          "indexDec2023": 303.2562310083216
+        },
+        {
+          "period": "2026-03",
+          "officialValue": 11077.0608,
+          "indexDec2023": 313.51424357837084
+        },
+        {
+          "period": "2026-04",
+          "officialValue": 11363.0904,
+          "indexDec2023": 321.60974429865433
+        },
+        {
+          "period": "2026-05",
+          "officialValue": 11607.3937,
+          "indexDec2023": 328.5242648277102
+        },
+        {
+          "period": "2026-06",
+          "officialValue": 11826.4103,
+          "indexDec2023": 334.72309544892573
+        },
+        {
+          "period": "2026-07",
+          "officialValue": 12076.3937,
+          "indexDec2023": 341.79837994661034
+        },
+        {
+          "period": "2026-08",
+          "officialValue": 12276.766,
+          "indexDec2023": 347.46952062217275
+        }
+      ]
+    },
+    {
+      "id": "alimentos",
+      "name": "IPC alimentos y bebidas no alcohólicas",
+      "sourceName": "INDEC",
+      "sourceUrl": "https://www.indec.gob.ar/indec/web/Nivel4-Tema-3-5-31",
+      "lastUpdated": "2026-08",
+      "officialSeries": {
+        "Codigo": "01",
+        "Descripcion": "Alimentos y bebidas no alcohólicas",
+        "Clasificador": "Nivel general y divisiones COICOP",
+        "Region": "Nacional"
+      },
+      "observations": [
+        {
+          "period": "2023-12",
+          "officialValue": 4173.6759,
+          "indexDec2023": 100.0
+        },
+        {
+          "period": "2024-01",
+          "officialValue": 5024.9656,
+          "indexDec2023": 120.3966412437535
+        },
+        {
+          "period": "2024-02",
+          "officialValue": 5622.8372,
+          "indexDec2023": 134.7214622007425
+        },
+        {
+          "period": "2024-03",
+          "officialValue": 6216.0451,
+          "indexDec2023": 148.9345423299399
+        },
+        {
+          "period": "2024-04",
+          "officialValue": 6590.088,
+          "indexDec2023": 157.89649598810487
+        },
+        {
+          "period": "2024-05",
+          "officialValue": 6909.553,
+          "indexDec2023": 165.55077982935856
+        },
+        {
+          "period": "2024-06",
+          "officialValue": 7117.223,
+          "indexDec2023": 170.52648961075295
+        },
+        {
+          "period": "2024-07",
+          "officialValue": 7345.407,
+          "indexDec2023": 175.9937085675483
+        },
+        {
+          "period": "2024-08",
+          "officialValue": 7611.781,
+          "indexDec2023": 182.37594826181876
+        },
+        {
+          "period": "2024-09",
+          "officialValue": 7787.142,
+          "indexDec2023": 186.57754426978863
+        },
+        {
+          "period": "2024-10",
+          "officialValue": 7880.586,
+          "indexDec2023": 188.8164339737065
+        },
+        {
+          "period": "2024-11",
+          "officialValue": 7952.043,
+          "indexDec2023": 190.52852187205048
+        },
+        {
+          "period": "2024-12",
+          "officialValue": 8127.7647,
+          "indexDec2023": 194.73876014186916
+        },
+        {
+          "period": "2025-01",
+          "officialValue": 8278.1147,
+          "indexDec2023": 198.3411002277393
+        },
+        {
+          "period": "2025-02",
+          "officialValue": 8546.6547,
+          "indexDec2023": 204.77523662055307
+        },
+        {
+          "period": "2025-03",
+          "officialValue": 9051.2822,
+          "indexDec2023": 216.8659574165785
+        },
+        {
+          "period": "2025-04",
+          "officialValue": 9318.2093,
+          "indexDec2023": 223.26144921794238
+        },
+        {
+          "period": "2025-05",
+          "officialValue": 9365.3121,
+          "indexDec2023": 224.39001792161193
+        },
+        {
+          "period": "2025-06",
+          "officialValue": 9418.0826,
+          "indexDec2023": 225.65438298647
+        },
+        {
+          "period": "2025-07",
+          "officialValue": 9596.7407,
+          "indexDec2023": 229.93497650356608
+        },
+        {
+          "period": "2025-08",
+          "officialValue": 9729.0211,
+          "indexDec2023": 233.10437449156026
+        },
+        {
+          "period": "2025-09",
+          "officialValue": 9910.131,
+          "indexDec2023": 237.4437123879216
+        },
+        {
+          "period": "2025-10",
+          "officialValue": 10136.6605,
+          "indexDec2023": 242.87129002997094
+        },
+        {
+          "period": "2025-11",
+          "officialValue": 10421.9128,
+          "indexDec2023": 249.70584802715513
+        },
+        {
+          "period": "2025-12",
+          "officialValue": 10748.4071,
+          "indexDec2023": 257.52855174978964
+        },
+        {
+          "period": "2026-01",
+          "officialValue": 11251.1166,
+          "indexDec2023": 269.573317851537
+        },
+        {
+          "period": "2026-02",
+          "officialValue": 11624.9808,
+          "indexDec2023": 278.5309899122737
+        },
+        {
+          "period": "2026-03",
+          "officialValue": 12014.7,
+          "indexDec2023": 287.8685429311845
+        },
+        {
+          "period": "2026-04",
+          "officialValue": 12194.882,
+          "indexDec2023": 292.1856486269094
+        },
+        {
+          "period": "2026-05",
+          "officialValue": 12494.9767,
+          "indexDec2023": 299.37582599549717
+        },
+        {
+          "period": "2026-06",
+          "officialValue": 12657.4575,
+          "indexDec2023": 303.26881634484363
+        },
+        {
+          "period": "2026-07",
+          "officialValue": 12907.5083,
+          "indexDec2023": 309.2599571519197
+        },
+        {
+          "period": "2026-08",
+          "officialValue": 13121.2544,
+          "indexDec2023": 314.38124843378466
+        }
+      ]
+    },
+    {
+      "id": "servicios",
+      "name": "IPC servicios",
+      "sourceName": "INDEC",
+      "sourceUrl": "https://www.indec.gob.ar/indec/web/Nivel4-Tema-3-5-31",
+      "lastUpdated": "2026-08",
+      "officialSeries": {
+        "Codigo": "S",
+        "Descripcion": null,
+        "Clasificador": "Bienes y servicios",
+        "Region": "Nacional"
+      },
+      "observations": [
+        {
+          "period": "2023-12",
+          "officialValue": 2440.8926,
+          "indexDec2023": 100.0
+        },
+        {
+          "period": "2024-01",
+          "officialValue": 2899.856,
+          "indexDec2023": 118.80309686710508
+        },
+        {
+          "period": "2024-02",
+          "officialValue": 3410.2062,
+          "indexDec2023": 139.71143998715877
+        },
+        {
+          "period": "2024-03",
+          "officialValue": 3937.969,
+          "indexDec2023": 161.33315328990713
+        },
+        {
+          "period": "2024-04",
+          "officialValue": 4589.525,
+          "indexDec2023": 188.02650309153296
+        },
+        {
+          "period": "2024-05",
+          "officialValue": 4817.011,
+          "indexDec2023": 197.3462904512882
+        },
+        {
+          "period": "2024-06",
+          "officialValue": 5235.459,
+          "indexDec2023": 214.48952731472085
+        },
+        {
+          "period": "2024-07",
+          "officialValue": 5570.508,
+          "indexDec2023": 228.21602228627347
+        },
+        {
+          "period": "2024-08",
+          "officialValue": 5933.396,
+          "indexDec2023": 243.08304265415032
+        },
+        {
+          "period": "2024-09",
+          "officialValue": 6204.713,
+          "indexDec2023": 254.19852557216157
+        },
+        {
+          "period": "2024-10",
+          "officialValue": 6469.062,
+          "indexDec2023": 265.0285391499814
+        },
+        {
+          "period": "2024-11",
+          "officialValue": 6752.971,
+          "indexDec2023": 276.65989892386085
+        },
+        {
+          "period": "2024-12",
+          "officialValue": 7053.1491,
+          "indexDec2023": 288.9577812641162
+        },
+        {
+          "period": "2025-01",
+          "officialValue": 7320.2711,
+          "indexDec2023": 299.9014008236167
+        },
+        {
+          "period": "2025-02",
+          "officialValue": 7545.3964,
+          "indexDec2023": 309.1244735634824
+        },
+        {
+          "period": "2025-03",
+          "officialValue": 7844.6013,
+          "indexDec2023": 321.3824852433081
+        },
+        {
+          "period": "2025-04",
+          "officialValue": 8081.0711,
+          "indexDec2023": 331.0703264863026
+        },
+        {
+          "period": "2025-05",
+          "officialValue": 8302.8934,
+          "indexDec2023": 340.15807987618956
+        },
+        {
+          "period": "2025-06",
+          "officialValue": 8566.1693,
+          "indexDec2023": 350.94413002849853
+        },
+        {
+          "period": "2025-07",
+          "officialValue": 8827.7358,
+          "indexDec2023": 361.6601484227532
+        },
+        {
+          "period": "2025-08",
+          "officialValue": 9044.8689,
+          "indexDec2023": 370.5557917624069
+        },
+        {
+          "period": "2025-09",
+          "officialValue": 9256.5425,
+          "indexDec2023": 379.22776692428
+        },
+        {
+          "period": "2025-10",
+          "officialValue": 9490.5471,
+          "indexDec2023": 388.8146123266546
+        },
+        {
+          "period": "2025-11",
+          "officialValue": 9762.7718,
+          "indexDec2023": 399.9672824605228
+        },
+        {
+          "period": "2025-12",
+          "officialValue": 10090.5744,
+          "indexDec2023": 413.3969024282346
+        },
+        {
+          "period": "2026-01",
+          "officialValue": 10401.8561,
+          "indexDec2023": 426.149683931198
+        },
+        {
+          "period": "2026-02",
+          "officialValue": 10822.7791,
+          "indexDec2023": 443.39431812772096
+        },
+        {
+          "period": "2026-03",
+          "officialValue": 11271.9282,
+          "indexDec2023": 461.79533667314973
+        },
+        {
+          "period": "2026-04",
+          "officialValue": 11566.6891,
+          "indexDec2023": 473.87128380822656
+        },
+        {
+          "period": "2026-05",
+          "officialValue": 11856.0739,
+          "indexDec2023": 485.7269795483832
+        },
+        {
+          "period": "2026-06",
+          "officialValue": 12197.4173,
+          "indexDec2023": 499.71134739807883
+        },
+        {
+          "period": "2026-07",
+          "officialValue": 12575.4876,
+          "indexDec2023": 515.2003656367347
+        },
+        {
+          "period": "2026-08",
+          "officialValue": 12830.0223,
+          "indexDec2023": 525.6283008928783
+        }
+      ]
+    }
   ]
 }
