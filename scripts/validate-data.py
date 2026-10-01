@@ -52,10 +52,30 @@ def validate_employment(data):
         errors.append("empleo: valores oficiales de control incorrectos")
     return errors
 
+def validate_agreements(data):
+    errors = []
+    agreements = data.get("agreements", [])
+    periods = [item.get("period") for item in agreements]
+    if data.get("demo") is not False: errors.append("paritarias: demo debe ser false")
+    if periods != [f"2026-{month:02d}" for month in range(1, 13)]: errors.append("paritarias: deben existir los doce períodos ordenados de 2026")
+    if any(not isinstance(item.get("percent"), (int, float)) or item["percent"] < 0 for item in agreements): errors.append("paritarias: porcentajes inválidos")
+    if any("argentina.gob.ar/normativa/nacional/decreto-" not in item.get("source", {}).get("url", "") for item in agreements): errors.append("paritarias: fuente no oficial")
+    if not errors:
+        controls = ((5, 10.2965), (8, 17.6216), (9, 19.8564), (12, 25.8255))
+        for length, expected in controls:
+            actual = math.prod(1 + item["percent"] / 100 for item in agreements[:length]) * 100 - 100
+            if not math.isclose(actual, expected, abs_tol=.001): errors.append(f"paritarias: acumulado incorrecto a {periods[length - 1]}")
+    payments = data.get("extraordinaryPayments", [])
+    if [(item.get("period"), item.get("amount")) for item in payments] != [("2026-05", 40000), ("2026-12", 80000)]:
+        errors.append("paritarias: sumas extraordinarias incorrectas")
+    return errors
+
 def validate(path: Path, allow_demo: bool = False):
     data = json.loads(path.read_text(encoding="utf-8"))
     if path.name == "empleo.json":
         return validate_employment(data)
+    if path.name == "paritarias.json":
+        return validate_agreements(data)
     errors = []
     if data.get("demo") and not allow_demo:
         errors.append("contiene datos DEMO")
@@ -101,7 +121,7 @@ def validate(path: Path, allow_demo: bool = False):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--allow-demo", action="store_true", help="permite validar el esquema transitorio DEMO")
-    parser.add_argument("files", nargs="*", type=Path, default=[Path("data/inflacion.json"), Path("data/salarios.json"), Path("data/empleo.json")])
+    parser.add_argument("files", nargs="*", type=Path, default=[Path("data/inflacion.json"), Path("data/salarios.json"), Path("data/empleo.json"), Path("data/paritarias.json")])
     args = parser.parse_args()
     failed = False
     for path in args.files:
