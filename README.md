@@ -4,7 +4,7 @@ Observatorio web de indicadores económicos y laborales relevantes para trabajad
 
 ## Estado de los datos
 
-El dashboard principal publica series oficiales de **INDEC** transformadas de manera reproducible desde los cuatro CSV auditados y conservados en `data/raw/indec/`. No descarga archivos durante la generación. Empleo público y paritarias continúan como “Datos pendientes de incorporación”: no contienen datos inventados ni se consideran series DEMO.
+El dashboard principal publica series oficiales de **INDEC** transformadas de manera reproducible desde los cuatro CSV auditados y conservados en `data/raw/indec/`. No descarga archivos durante la generación. La sección Paritarias APN publica los doce incrementos acordados para 2026, sus acumulados compuestos, sumas extraordinarias y enlaces a las normas oficiales desde `data/paritarias.json`.
 
 | Indicador | Selección oficial | Cobertura publicada |
 | --- | --- | --- |
