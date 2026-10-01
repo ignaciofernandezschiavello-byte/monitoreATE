@@ -41,3 +41,8 @@ export const gap = (salary, prices) => alignAndCalculate(salary, prices, (s, p) 
 export const formatPercent = value => value == null ? 'Pendiente' : `${value >= 0 ? '+' : ''}${value.toFixed(1).replace('.', ',')}%`;
 export const formatIndex = value => value == null ? '—' : value.toFixed(1).replace('.', ',');
 export const formatPeriod = period => new Intl.DateTimeFormat('es-AR', {month:'long', year:'numeric', timeZone:'UTC'}).format(new Date(`${period}-02T00:00:00Z`));
+
+export const periodFromLocalDate = date => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+export const isPeriodEffective = (period, date = new Date()) => period <= periodFromLocalDate(date);
+export const compoundIncrease = agreements => agreements.reduce((factor, item) => factor * (1 + item.percent / 100), 1) * 100 - 100;
+export const effectiveAgreements = (agreements, date = new Date()) => agreements.filter(item => isPeriodEffective(item.period, date));

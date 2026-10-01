@@ -1,7 +1,6 @@
-import {toBase100, validateDataset, accumulated, monthly, yearly, realSalary, gap, formatPercent, formatIndex, formatPeriod} from './calculations.js';
+import {toBase100, validateDataset, accumulated, monthly, yearly, realSalary, gap, formatPercent, formatIndex, formatPeriod, compoundIncrease, effectiveAgreements, isPeriodEffective} from './calculations.js';
 import {lineChart} from './charts.js';
 
-const CONFIG = { demoMode: false };
 const $ = selector => document.querySelector(selector);
 const money = value => new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(value);
 const people = value => new Intl.NumberFormat('es-AR',{maximumFractionDigits:0}).format(value);
@@ -15,9 +14,8 @@ function metricCard(id,title,primary,details,period,series){return `<article cla
 async function init(){
   try {
     const [inflation,salaries,employment,agreements]=await Promise.all(['inflacion.json','salarios.json','empleo.json','paritarias.json'].map(loadData));
-    if (CONFIG.demoMode !== Boolean(inflation.demo || salaries.demo || employment.demo)) throw new Error('CONFIG.demoMode no coincide con el estado de los archivos');
-    validateDataset(inflation,{allowDemo:CONFIG.demoMode}); validateDataset(salaries,{allowDemo:CONFIG.demoMode});
-    $('#demo-banner').hidden=!CONFIG.demoMode; const series=Object.fromEntries([...inflation.series,...salaries.series].map(s=>[s.id,{...s,observations:toBase100(s.observations)}]));
+    validateDataset(inflation); validateDataset(salaries);
+    const series=Object.fromEntries([...inflation.series,...salaries.series].map(s=>[s.id,{...s,observations:toBase100(s.observations)}]));
     const salarySeries=series.salario_publico, salary=salarySeries.observations, ipc=series.ipc.observations, food=series.alimentos.observations, services=series.servicios.observations, real=realSalary(salary,ipc);
     $('#metrics').innerHTML=[
       metricCard('card-salary','Salario público',formatIndex(salary.at(-1).value),[['Desde dic. 2023',formatPercent(accumulated(salary))]],salary.at(-1).period,salarySeries),
@@ -51,5 +49,21 @@ function setupEmployment(data){
 
 function setupCalculator(series){const form=$('#calculator');form.onsubmit=e=>{e.preventDefault();const base=Number($('#base-salary').value),current=Number($('#current-salary').value||0),indicator=$('#calc-index').value,data=series[indicator],target=base*data.at(-1).value/100,difference=current-target,percent=current?difference/target*100:null;$('#calculator-result').hidden=false;$('#calculator-result').innerHTML=`<span>Para mantener el mismo poder adquisitivo de diciembre de 2023, hoy deberías cobrar:</span><strong>${money(target)}</strong>${current?`<div class="comparison ${difference<0?'negative':'positive'}">${difference<0?'Pérdida':'Ganancia'}: ${money(Math.abs(difference))} (${formatPercent(Math.abs(percent))})</div>`:'<small>Ingresá tu salario actual para calcular la diferencia.</small>'}`}}
 function setupDataTable(series){const select=$('#data-select');select.innerHTML=Object.values(series).map(s=>`<option value="${s.id}">${s.name}</option>`).join('');const render=()=>{const s=series[select.value];$('#data-body').innerHTML=s.observations.map(o=>`<tr><td>${s.name}</td><td>${o.period}</td><td>${o.officialValue.toLocaleString('es-AR',{maximumFractionDigits:4})}</td><td>${formatIndex(o.value)}</td><td>${s.sourceName}</td><td>${s.lastUpdated}</td></tr>`).join('')};select.onchange=render;render();$('#download-csv').onclick=()=>{const s=series[select.value],rows=[['indicador','periodo','valor_oficial_indec','indice_monitoreate_dic_2023_100','fuente','actualizado'],...s.observations.map(o=>[s.name,o.period,o.officialValue,o.value,s.sourceName,s.lastUpdated])],blob=new Blob([rows.map(r=>r.map(x=>`"${x}"`).join(',')).join('\n')],{type:'text/csv'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`monitoreate-${s.id}.csv`;a.click();URL.revokeObjectURL(a.href)}}
-function renderAgreements(data){$('#agreements-body').innerHTML=data.agreements.length?data.agreements.map(a=>`<tr><td>${a.date}</td><td>${a.period}</td><td>${a.increase}</td><td>${a.accumulated}</td><td>${a.inflation}</td><td>${a.gap}</td></tr>`).join(''):'<tr><td colspan="6" class="empty">Datos pendientes de incorporación</td></tr>'}
+function renderAgreements(data){
+  const today=new Date(),effective=effectiveAgreements(data.agreements,today),agreed=compoundIncrease(data.agreements),current=compoundIncrease(effective),last=effective.at(-1);
+  const percent=value=>`${value.toFixed(1).replace('.',',')} %`;
+  const extrasEffective=data.extraordinaryPayments.filter(item=>isPeriodEffective(item.period,today));
+  const lastExtra=extrasEffective.at(-1),futureExtras=data.extraordinaryPayments.filter(item=>!isPeriodEffective(item.period,today));
+  $('#agreement-metrics').innerHTML=[
+    ['Acumulado vigente',percent(current),last?`Hasta ${formatPeriod(last.period)}`:'Sin tramos vigentes'],
+    ['Acumulado acordado 2026',percent(agreed),`Acordado hasta ${formatPeriod(data.agreements.at(-1).period)}`],
+    ['Pago extraordinario vigente',lastExtra?money(lastExtra.amount):'—',lastExtra?formatPeriod(lastExtra.period):'Sin pagos vigentes'],
+    ['Pago extraordinario acordado',futureExtras.length?futureExtras.map(item=>`${money(item.amount)} · ${formatPeriod(item.period)}`).join('<br>'):'—',futureExtras.length?'Vigencia futura':'Sin pagos futuros']
+  ].map(([title,value,note])=>`<article class="agreement-card"><div class="eyebrow">${title}</div><strong>${value}</strong><small>${note}</small></article>`).join('');
+  let factor=1;
+  const cumulative=data.agreements.map(item=>({period:item.period,value:(factor*=1+item.percent/100,factor*100-100)}));
+  lineChart($('#agreements-monthly-chart'),[{name:'Aumento mensual',labels:data.agreements.map(item=>item.period),values:data.agreements.map(item=>item.percent)}],{baseline:false,signed:true});
+  lineChart($('#agreements-cumulative-chart'),[{name:'Acumulado acordado',labels:cumulative.map(item=>item.period),values:cumulative.map(item=>item.value)}],{baseline:false,signed:true});
+  $('#agreements-body').innerHTML=data.agreements.map((item,index)=>{const effectiveNow=isPeriodEffective(item.period,today),extras=data.extraordinaryPayments.filter(extra=>extra.period===item.period);return `<tr><td>${formatPeriod(item.period)}</td><td>${item.percent.toFixed(1).replace('.',',')} %</td><td>${cumulative[index].value.toFixed(4).replace('.',',')} %</td><td><span class="status-pill ${effectiveNow?'effective':'future'}">${effectiveNow?'Vigente':'Acordado / vigencia futura'}</span></td><td>${extras.length?extras.map(extra=>`${money(extra.amount)} · ${effectiveNow?'pago extraordinario':'pago extraordinario acordado para '+formatPeriod(extra.period)}`).join('<br>'):'—'}</td><td><a href="${item.source.url}" target="_blank" rel="noopener">${item.source.label}</a></td></tr>`}).join('');
+}
 $('#menu-button').onclick=()=>{const nav=$('#site-nav');nav.classList.toggle('open');$('#menu-button').setAttribute('aria-expanded',nav.classList.contains('open'))};document.querySelectorAll('#site-nav a').forEach(a=>a.onclick=()=>$('#site-nav').classList.remove('open'));init();
