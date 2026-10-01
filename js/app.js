@@ -1,19 +1,21 @@
-import {toBase100, validateDataset, accumulated, monthly, yearly, realSalary, gap, formatPercent, formatIndex, formatPeriod, compoundIncrease, effectiveAgreements, isPeriodEffective} from './calculations.js';
-import {lineChart} from './charts.js';
+import {toBase100, validateDataset, accumulated, monthly, yearly, realSalary, gap, formatPercent, formatIndex, formatPeriod, compoundIncrease, effectiveAgreements, isPeriodEffective} from './calculations.js?v=20261001-1';
+import {lineChart} from './charts.js?v=20261001-1';
 
 const $ = selector => document.querySelector(selector);
 const money = value => new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(value);
 const people = value => new Intl.NumberFormat('es-AR',{maximumFractionDigits:0}).format(value);
 const signedPeople = value => new Intl.NumberFormat('es-AR',{maximumFractionDigits:0,signDisplay:'exceptZero'}).format(value);
 const employmentPercent = value => value == null?'—':`${new Intl.NumberFormat('es-AR',{minimumFractionDigits:1,maximumFractionDigits:1,signDisplay:'exceptZero'}).format(value)} %`;
-async function loadData(file){const response=await fetch(new URL(`../data/${file}`,import.meta.url));if(!response.ok)throw new Error(`No se pudo cargar ${file}`);return response.json()}
+async function loadData(file){const url=new URL(`../data/${file}`,import.meta.url);if(file==='paritarias.json')url.searchParams.set('v','20261001-1');const response=await fetch(url);if(!response.ok)throw new Error(`No se pudo cargar ${file}`);return response.json()}
 
 function sourceLink(series){return series.sourceUrl?`<a href="${series.sourceUrl}" target="_blank" rel="noopener">${series.sourceName}</a>`:series.sourceName}
 function metricCard(id,title,primary,details,period,series){return `<article class="metric-card" id="${id}"><div class="eyebrow">${title}</div><strong class="metric-value">${primary}</strong>${details.map(([k,v,c=''])=>`<div class="metric-row"><span>${k}</span><b class="${c}">${v}</b></div>`).join('')}<footer>Último dato disponible: ${formatPeriod(period)}<br>Fuente: ${sourceLink(series)}</footer></article>`}
 
 async function init(){
   try {
-    const [inflation,salaries,employment,agreements]=await Promise.all(['inflacion.json','salarios.json','empleo.json','paritarias.json'].map(loadData));
+    const agreements=await loadData('paritarias.json');
+    renderAgreements(agreements);
+    const [inflation,salaries,employment]=await Promise.all(['inflacion.json','salarios.json','empleo.json'].map(loadData));
     validateDataset(inflation); validateDataset(salaries);
     const series=Object.fromEntries([...inflation.series,...salaries.series].map(s=>[s.id,{...s,observations:toBase100(s.observations)}]));
     const salarySeries=series.salario_publico, salary=salarySeries.observations, ipc=series.ipc.observations, food=series.alimentos.observations, services=series.servicios.observations, real=realSalary(salary,ipc);
@@ -26,7 +28,7 @@ async function init(){
     const chartSeries=[['Salario público',salary],['IPC general',ipc],['IPC alimentos',food],['IPC servicios',services]].map(([name,o])=>({name,labels:o.map(x=>x.period),values:o.map(x=>x.value)}));
     lineChart($('#main-chart'),chartSeries); lineChart($('#real-chart'),[{name:'Salario real',labels:real.map(x=>x.period),values:real.map(x=>x.value)}]);
     const gapsGeneral=gap(salary,ipc),gapsFood=gap(salary,food); lineChart($('#gap-chart'),[['Brecha vs IPC',gapsGeneral],['Brecha vs alimentos',gapsFood]].map(([name,o])=>({name,labels:o.map(x=>x.period),values:o.map(x=>x.value)})),{baseline:false,signed:true});
-    setupCalculator({ipc,alimentos:food}); setupDataTable(series); setupEmployment(employment); renderAgreements(agreements);
+    setupCalculator({ipc,alimentos:food}); setupDataTable(series); setupEmployment(employment);
     $('#method-update').textContent=new Date().toLocaleDateString('es-AR',{timeZone:'UTC'});
   } catch(error){console.error(error);$('#load-error').hidden=false;$('#load-error').textContent='No fue posible cargar los datos. Ejecutá el sitio mediante un servidor local.'}
 }
@@ -55,10 +57,10 @@ function renderAgreements(data){
   const extrasEffective=data.extraordinaryPayments.filter(item=>isPeriodEffective(item.period,today));
   const lastExtra=extrasEffective.at(-1),futureExtras=data.extraordinaryPayments.filter(item=>!isPeriodEffective(item.period,today));
   $('#agreement-metrics').innerHTML=[
-    ['Acumulado vigente',percent(current),last?`Hasta ${formatPeriod(last.period)}`:'Sin tramos vigentes'],
-    ['Acumulado acordado 2026',percent(agreed),`Acordado hasta ${formatPeriod(data.agreements.at(-1).period)}`],
-    ['Pago extraordinario vigente',lastExtra?money(lastExtra.amount):'—',lastExtra?formatPeriod(lastExtra.period):'Sin pagos vigentes'],
-    ['Pago extraordinario acordado',futureExtras.length?futureExtras.map(item=>`${money(item.amount)} · ${formatPeriod(item.period)}`).join('<br>'):'—',futureExtras.length?'Vigencia futura':'Sin pagos futuros']
+    ['Último acuerdo',last?formatPeriod(last.period):'—',last?`${percent(last.percent)} · ${last.source.label}`:'Sin tramos vigentes'],
+    ['Aumento del mes',last?percent(last.percent):'—',last?formatPeriod(last.period):'Sin tramos vigentes'],
+    ['Acumulado vigente',percent(current),last?`Hasta ${formatPeriod(last.period)}${lastExtra?` · Extraordinario: ${money(lastExtra.amount)}`:''}`:'Sin tramos vigentes'],
+    ['Acumulado acordado 2026',percent(agreed),`Extraordinarios: ${data.extraordinaryPayments.map(item=>`${money(item.amount)} en ${formatPeriod(item.period)}`).join(' · ')}${futureExtras.length?' · Incluye pagos futuros':''}`]
   ].map(([title,value,note])=>`<article class="agreement-card"><div class="eyebrow">${title}</div><strong>${value}</strong><small>${note}</small></article>`).join('');
   let factor=1;
   const cumulative=data.agreements.map(item=>({period:item.period,value:(factor*=1+item.percent/100,factor*100-100)}));
